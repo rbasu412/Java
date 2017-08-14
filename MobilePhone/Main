@@ -1,0 +1,144 @@
+/**
+ * Created by rukminibasu on 8/11/17.
+ */
+import java.util.Scanner;
+
+public class Main {
+    private static Scanner scanner = new Scanner(System.in);
+    private static MobilePhone mobilePhone = new MobilePhone("703 944 6606");
+
+    public static void main(String[] args){
+        boolean quit = false;
+        startPhone();
+        printActions();
+
+        while(!quit){
+            System.out.println("\n Enter action: (6 to show available actions)");
+
+            int action = scanner.nextInt();
+            scanner.nextLine();
+
+            switch(action){
+                case 0:
+                    System.out.println("\nShutting down...");
+                    quit = true;
+                    break;
+                case 1:
+                    printContacts();
+                    break;
+                case 2:
+                    addContact();
+                    break;
+                case 3:
+                    removeContact();
+                    break;
+                case 4:
+                    updateContact();
+                    break;
+                case 5:
+                    queryContact();
+                    break;
+                case 6:
+                    printActions();
+                    break;
+            }
+
+
+        }
+
+    }
+
+
+    private static void startPhone(){
+        System.out.println("Starting phone...");
+    }
+
+    private static void printActions(){
+        System.out.println("\nPress: ");
+        System.out.println("\t 0: to shutdown.");
+        System.out.println("\t 1: to print contacts");
+        System.out.println("\t 2: to add contact");
+        System.out.println("\t 3: to remove contact ");
+        System.out.println("\t 4: to update existing contact.");
+        System.out.println("\t 5: query if an existing contact exists");
+        System.out.println("\t 6: print list of available actions");
+
+    }
+
+    private static void printContacts(){
+        mobilePhone.printContacts();
+    }
+
+    private static void updateContact() {
+        System.out.println("Please enter contact that you wish to update. ");
+        String name = scanner.nextLine();
+        Contacts existingContact = mobilePhone.queryContact(name);
+        if (name == null) {
+            System.out.println("Contact not found.");
+            return;
+        }
+
+        System.out.println("Print new name: ");
+        String newName = scanner.nextLine();
+        System.out.println("Enter new contact phone number: ");
+        String newNum = scanner.nextLine();
+
+        Contacts newContact = Contacts.createContactRecord(newName, newNum);
+
+        if (mobilePhone.updateContact(existingContact, newContact)) {
+            System.out.println("Successfuly updated.");
+        } else {
+            System.out.println("Error.");
+        }
+    }
+
+
+
+    private static void queryContact(){
+        System.out.println("Please enter a contact you want to query: ");
+        String name = scanner.nextLine();
+        Contacts existingContact = mobilePhone.queryContact(name);
+
+        if(existingContact == null){
+            System.out.println("Contact not found.");
+        }
+        else{
+            System.out.println("Name: " + existingContact.getName() + " Phone number: " + existingContact.getPhoneNumber());
+        }
+    }
+
+    private static void addContact(){
+        System.out.println("Please enter a name: ");
+        String name = scanner.nextLine();
+        System.out.println("Please enter a number: ");
+        String number = scanner.nextLine();
+
+        Contacts newContact = Contacts.createContactRecord(name, number);
+
+        mobilePhone.addNewContact(newContact);
+
+        System.out.println("New contact added: " + name + " -> " + number);
+    }
+
+    private static void removeContact(){
+        System.out.println("Please enter a contact you want to remove: ");
+        String name = scanner.nextLine();
+        Contacts existingContact = mobilePhone.queryContact(name);
+
+        if(existingContact == null){
+            System.out.println("Contact not found.");
+            return;
+        }
+
+        if(mobilePhone.removeContact(existingContact)){
+            System.out.println("Contact succesfully removed.");
+        }
+        else{
+            System.out.println("Error removing contact.");
+        }
+
+
+    }
+
+
+}
